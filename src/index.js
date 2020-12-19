@@ -89,15 +89,25 @@ class Board extends React.Component {
 }
 
 class Game extends React.Component {
+  static defaultProps = { 
+    locations: [
+      [1, 1], [1, 2], [1, 3],
+      [2, 1], [2, 2], [2, 3],
+      [3, 1], [3, 2], [3, 3],
+    ]
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
+        move: null
       }],
       stepNumber: 0,
       xIsNext: true
     }
+    this.handleClick = this.handleClick.bind(this);
   }
 
   handleClick(i) {
@@ -110,7 +120,8 @@ class Game extends React.Component {
     squares[i] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat([{
-        squares: squares
+        squares: squares,
+        move: this.props.locations[i]
       }]), 
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext
@@ -131,7 +142,7 @@ class Game extends React.Component {
 
     const moves = history.map((step, move) => {
       const desc = move ?
-        'Go to move #' + move :
+        'Go to move #' + move + ' (' + step.move + ')' :
         'Go to game start';
       return (
         <li key={move}>
