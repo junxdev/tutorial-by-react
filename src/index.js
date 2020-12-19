@@ -3,19 +3,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// class Square extends React.Component {
-//   render() {
-//     return (
-//       <button 
-//         className="square" 
-//         onClick={() => this.props.onClick()}
-//       >
-//         {this.props.value}
-//       </button>
-//     );
-//   }
-// }
-
 function Square(props) {
   return (
     <button
@@ -28,61 +15,52 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     squares: Array(9).fill(null),
-  //     xIsNext: true
-  //   };
-  // }
-
-  // handleClick(i) {
-  //   const squares = this.state.squares.slice();
-  //   if (calculateWinner(squares) || squares[i]) {
-  //     return;
-  //   }
-  //   squares[i] = this.state.xIsNext ? 'X' : 'O';
-  //   this.setState({
-  //     squares: squares, 
-  //     xIsNext: !this.state.xIsNext
-  //   });
-  // }
   
   renderSquare(i) {
     return (
       <Square 
+        key={i}
         value={this.props.squares[i]} 
         onClick={() => this.props.onClick(i)} 
       />
     );
   }
 
-  render() {
-    // const winner = calculateWinner(this.state.squares);
-    // let status;
-    // if (winner) {
-    //   status = 'Winner: ' + winner;
-    // } else {
-    //   status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    // }
+  renderBoard() {
+    const board = [];
+    for (var i = 0; i < 3; i++) {
+      let row = [];
+      for (var j = i * 3; j < (i + 1) * 3; j++) {
+        row.push(this.renderSquare(j));
+      }
+      board.push(<div className="board-row" key={i}>{row}</div>);
+    }
+    return board;
+  }
 
+  render() {
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {this.renderBoard()}
+        {/* Implemented by anonymous function self-executed
+        {
+          (() => {
+            const x = [];
+            for(var i = 0; i < 3; i++) {
+              x.push(<div className="board-row">{
+                ((i) => {
+                  let y = []
+                  for(var j = i * 3; j < (i + 1) * 3; j++) {
+                    y.push(this.renderSquare(j));
+                  }
+                  return y;
+                })(i)
+              }</div>);
+            }
+            console.log(x);
+            return x;
+          })()
+        } */}
       </div>
     );
   }
