@@ -8,6 +8,8 @@ function Square(props) {
     <button
       className="square"
       onClick={props.onClick}
+      // When someone wins, highlight the three squares that caused the win.
+      style={{backgroundColor:`${props.winner? 'red' : 'white'}`}}
     >
         {props.value}
     </button>
@@ -21,7 +23,8 @@ class Board extends React.Component {
       <Square 
         key={i}
         value={this.props.squares[i]} 
-        onClick={() => this.props.onClick(i)} 
+        onClick={() => this.props.onClick(i)}
+        winner={this.props.winner.indexOf(i) > -1 ? true : false}
       />
     );
   }
@@ -93,7 +96,7 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares).length || squares[i]) {
       return;
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O';
@@ -135,8 +138,8 @@ class Game extends React.Component {
     const sorted_moves = (ascending ? moves : moves.reverse());
 
     let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
+    if (winner.length) {
+      status = 'Winner: ' + (this.state.xIsNext ? 'O' : 'X');
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -145,8 +148,9 @@ class Game extends React.Component {
       <div className="game">
         <div className="game-board">
           <Board 
-            squares = {current.squares}
+            squares={current.squares}
             onClick={(i) => this.handleClick(i)}
+            winner={winner}
           />
         </div>
         <div className="game-info">
@@ -173,10 +177,12 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      // When someone wins, return the array with value
+      return [a, b, c];
     }
   }
-  return null;
+  // While the game, just return the empty array
+  return [];
 }
 
 // ========================================
