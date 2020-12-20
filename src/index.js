@@ -141,7 +141,11 @@ class Game extends React.Component {
     if (winner.length) {
       status = 'Winner: ' + (this.state.xIsNext ? 'O' : 'X');
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      if (stepNumber === 9) { // When no one wins, display a message about the result being a draw
+        status = 'Draw';
+      } else {
+        status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      }
     }
 
     return (
@@ -181,7 +185,7 @@ function calculateWinner(squares) {
       return [a, b, c];
     }
   }
-  // While the game, just return the empty array
+  // While the game goes or no one wins, just return the empty array
   return [];
 }
 
